@@ -22,24 +22,12 @@ export default function UserDetails() {
   })
   const [updateUser, { loading: userUpdateInProgress }] =
     useMutation(UPDATE_USER)
-  const [deleteUser, { loading: userDeleteInProgress }] = useMutation(
-    DELETE_USER,
-    {
-      update: cache => {
-        cache.modify({
-          id: cache.identify(data.profiles_by_pk),
-          fields: {
-            profiles(existingUsersRef, { readField }) {
-              return existingUsersRef.filter(
-                userRef => id !== readField('id', userRef)
-              )
-            },
-          },
-        })
-      },
-    }
-  )
+
+  const [deleteUser, { loading: userDeleteInProgress }] =
+    useMutation(DELETE_USER)
+
   const { register, handleSubmit } = useForm()
+
   const onSubmit = values => {
     updateUser({
       variables: {
@@ -54,6 +42,11 @@ export default function UserDetails() {
   const handleDelete = () => {
     deleteUser({
       variables: { id },
+      update: cache => {
+        const normalizedId = cache.identify({ id, __typename: 'profiles' })
+        cache.evict({ id: normalizedId })
+        cache.gc()
+      },
     }).then(() => {
       push('/')
     })
