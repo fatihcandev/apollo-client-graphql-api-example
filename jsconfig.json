@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "components/*": [
+        "components/*"
+      ],
+      "@/graphql/*": [
+        "graphql/*"
+      ],
+      "styles/*": [
+        "styles/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    ".next",
+  ]
+}
